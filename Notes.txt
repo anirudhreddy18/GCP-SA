@@ -1,0 +1,277 @@
+GCP
+
+Login
+Credentials created location $HOME/.config/gcloud/application_default_credentials.json
+
+- gcloud init   -> setup configuration
+- gcloud auth application-default login -> install Application default Credentials file
+- gloud auth service-account -> use service account to authenticate.
+- gcloud config list -> lists all the config ex: dev, test, prod etc.
+Region, Zone, account(user/SA), project
+Other CLI tools: gsutil, Kubectl
+Cloud Shell: files in home directory $HOME will persist b/w sessions, (scripts, config files etc.)
+
+Cloud run
+AWS Equivalent : ECS
+Docker container
+From source repo builds
+
+Type 1
+Event driven & streaming
+Web apps
+APIS and microservices
+
+Batch Jobs
+ - DB migration
+ - processing files in bucket
+ -  send invoices
+- Database query & upload results.
+
+EDA:  - 60+ cloud sources
+ - Cloud Storage via Cloud Audit Logs
+ - Custom apps publishing to Pub/Sub
+ 
+EDA Cloud Run for Anthos -> KNative Serverless functions that run on K8s
+ - 60+ cloud sources
+ - Cloud Storage via Cloud Audit Logs
+ - Custom apps publishing to Pub/Sub
+ - Custom Events
+
+GKE
+  - cluster: group of compute engine instances. Need to create a cluster to run workloads
+  - master: manages the cluster
+  - worker node: all the workloads run here
+  Zonal Cluster: single control plane, run in same zone
+  Multi-zonal cluster: single control plane, but nodes running in multiple zones.
+  Regional Cluster: Replicas of control plane in multiple zones of region. Nodes also run in same zone as control plane. HA
+  Private Cluster: VPC-native cluster. Nodes only have internal IP’s.
+  Alpha cluster: test new K8s features.
+  Ingress: Provide external access to services in cluster. Provides load balancing & SSL.
+  Provides pod & cluster Autoscaling
+  - gcloud container clusters get-credentials CLUSTER --region us-central1 --project PROJECT_ID
+  - can add more than 1 node pool. Within Node pool, you can configure instance types etc.
+
+GCR
+curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" \
+| tar xz docker-credential-gcr \
+&& chmod +x docker-credential-gcr && sudo mv docker-credential-gcr /usr/bin/
+
+GCP Serverless
+When an object is uploaded to bucket, directly invoke a cloud function
+When an object is uploaded to bucket, setup a notification to pub/sub & then respond to that event using Cloud function/cloud run.
+When an object is uploaded to bucket, directly trigger a cloud run service uses eventArc.
+
+IAM
+ GCP ROLES -> AWS policies
+ GCP Policy -> AWS Role Binding
+ Roles -> it’s all about permissions. Can have multiple permissions
+ Policy -> Assigning role/roles to User. 
+ 
+Roles
+ Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
+ Predefined -> storageAdmin etc.
+ Custom -> Create a role, add permissions. Example: object.get, object.list
+
+Service Accounts -> similar to AWS Roles, you can use Service Accounts to launch VM’s etc. Create a service account, add roles to Service account.
+  Usecase1: Use that role when launching a VM. Users wanting to use service account to launch a VM, should have necessary permissions to have access service account. Similar to Sts:AssumeRole.
+  They don’t use passwords, uses Public/private Keys. Automatically rotated
+  Usecase 2:On premise -> GCP(long lived). Create a service account with key, use that key to authenticate. Export Google_application_credentials=/path/to/file. Use client libraries with Application Default Credentials(ADC).
+  Usecase3: on Prem to GCP API(short lived). Uses OAuth2 , Open ID, JWT Tokens. When a member needs elevated role, he can assume service account role. Similar to Deleting resources in EC2, assume role & then delete the instance. Ex2: A service in GCP needs to access another service in Another cloud (Open ID connect tokens).
+ Across Projects: In project B, add the service account from Project A and then assign Storage Object Viewer permission on the bucket.
+
+VPC
+  VPC is global & subnets are created per region us-central-1
+  Each project has a default VPC
+
+  When creating subnet:
+    Enable private google access -> Allows VM’s to connect to Google API’s using private IP’s.
+    Flow logs: troubleshoot any VPC related network Issues
+** Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
+
+  - by default uses hub & spoke -> it means all VPC can connect to 1 central VPC. NO transitive routing
+  - Full Mesh Architecture VPC Peering -> connect all vpcs, doesn’t scale well. N * n-1 /2 connections
+  - need hub & spoke with transitive routing -> use Transit Gateway
+
+    Connect other VPC’s
+    VPC Network Peering: Different VPC communicating with each other. Used for connecting VPC’s across organizations. Cannot overlap CIDR ranges.
+    AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.
+
+    On Prem Connections
+    Cloud VPN -> connect from GCP to onprem resources using VPN.
+    AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. 
+        - connect from GCP to onprem resources on private Network which is fast.
+        - connect on perm resources directly to VPC.
+
+   VPC Endpoints
+   AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
+   AWS Gateway endpoints -> private google access.
+  
+
+Firewall Rules:
+  - Ingress rule, egress rules 
+  - can be applied within network
+  -  they are global, controls ingress & egress traffic & also protects VM instances.
+  - same rule applied to all instances, apply tags to specific VM & using a service account.
+ - cannot share among other networks (ex: VPC Peering)
+
+AWS:
+  Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
+    
+Pub/Sub
+ - Event Driven
+ - Streaming Analytics (pair with Dataflow & send data to BigQuery)
+ - pub/sub + Dataflow -> Streaming data (AWS Kinesis)
+
+Service Account
+ - can be used as identity(user)
+ - can be used as policy(user can impersonate SA) - similar to AWS Role for elevated access
+ - can be assigned to Compute Engine to make API calls to other GCP Services (similar to AWS Roles assigned to Lambda/EC2).
+
+Big Data & Analytics Services
+ - Pub/sub
+ - BigQuery -> Data warehouse, OLAP, AWS Redshift
+ - Google CLoud Studio -> Managed visual analytics Service
+ - Dataflow -> data pipelines (stream + batch) use cases, ETL & more
+ - Dataproc -> Apache spark & Hadoop clusters
+ - Dataprep -> clean & prepare data
+ - Datalab -> Explore. & Visualize data on Jupyter notebooks
+ - Cloud Composer -> workflow orchestration service across clouds & on premise Data centers
+ - data lake -> single platform with combination of solutions for data storage, data management & Analytics.
+
+Anthos Service Mesh(Istio)
+  Sidecar container to implement common Microservice features.
+  security, observability, and reliability
+  - Mutual TLS with end to end encryption
+  - Metrics, logging & tracing
+  - Authentication & Authorization
+  - Role based Access to other micro services or fine grained control over specific routes
+  - A/B, canary release strategies.
+  - circuit breakers
+  - cloud logging & cloud monitoring support.
+  
+Event Arc 
+  Cloud events common specification
+  Event Provider:
+    Direct: pub/sub, cloud storage, cloud IOT, Cloud Memory storage etc.
+    Indirect: uses audit logs entries(GCE, GKE etc)
+  Event Destination:
+     Cloud functions, cloud run, GKE, Workflows.
+  - partner or 3rd party events - create event driven apps
+  - schema registry
+  - multiple consumers
+  - create rules & set consumers
+  - Schedulers
+  - publish custom events for micro services.
+
+Event Driven Architectures
+  * Increases in Traffic
+  * durabilty event is not lost when app is down
+  * increase availability
+  * easily add another consumer without producer worrying
+  * Decoupling
+
+APIGEE
+ Features: Authentication & Authorization, routing/multiple versions, latency, caching, Aggregation, Rate limiting.
+ Design, secure, publish, analyze, monitor, monetize, scale 
+ AWS: AWS API Gateway
+
+ * On premise, google cloud & anywhere
+ * similar to Mulesoft/Anypoint studio
+ * Auto discovery b/w apps to integrate & connect
+ * metrics / monitoring
+ * caching with cloud CDN
+ * Developer Portals(API Keys etc.)
+ * Security policies
+ * proxies -> similar to AWS API gateway
+ * Assign a public IP Address to backend services, apply policies as proxy
+ * After product is available, register as app developer, create api key & then send requests.
+
+Workflows
+  - used for orchestration (mostly synchronous or http). Can also be used for async work processes using SQS & task tokens.
+  - choreography uses Event Driven style no step functions/workflows needed.
+  - use orchestration within Microservices & uses choreography for interacting with micro services
+  - Serverless workflows involve developing microservices using serverless functions. Each micro service can have 1 or more serverless functions that are delayed together. 
+  - SAGA rollback transactions in distributed systems.
+  - orchestration spring boot:  uses request queue & response queue. Orchestrator sends request & then reads response from another topic/queue.
+
+API Gateway
+  Used for serverless, setup is simple.
+  - Cloud functions, cloud run & App Engine
+  - Serverless
+  - metrics, tracing & logging
+
+Identity Platform
+  Authentication & Authorization for web apps, mobile etc.
+  SAML, OIDC, etc.
+  AWS : AWS Cognito
+
+Service Directory
+  - Service Discovery for oN perm, cloud apps
+
+HA
+ - Cloud SQL: Multi AZ regional with standup in a different zone
+ - GKE : multi master with regional clusters
+- Managed Services: cloud run, cloud function etc.
+- Compute/VM’s : global load balancing with instances distributed across multiple regions.
+- Global > multi -regional > regional > zonal
+- Disk’s: Live resizing, use regional persistent disks
+- Cloud Datastore: use multi-region locations
+- Network Tier: Premium Network Tier
+- Hybrid Connectivity: Dedicated Interconnect > Partner Interconnect > VPN
+
+Scalability
+  - MIG or instance groups - increase VM’s by Autoscaling
+  - GKE: increase pods., cluster Autoscaling - increase nodes.
+  - All Serverless services support Autoscaling.
+  - SQL databases needs to be vertically scaled(cloud SQL, cloud spanner, BigTable, Data proc) not server less.
+
+Security
+  - Cloud KMS - Digital signatures. Public & private key
+  - Cloud Armor - DDOS Attacks, OWASP top 10 attacks(XSS, SQL)
+  - Secret Manager - store passwords, rotate keys with cloud functions, auditing with cloud Audit logs, Encrypted by default.
+
+Databases
+  - Availability -> having standby instances in different zones or regions. Failover to standby when master is not available.
+  - Durability -> standbys, snapshots, transaction logs & replicas in different zones or regions.
+   RTO - recovery time objective -> max time app can be down
+   RPO -> recovery point objective -> max data loss 
+    Options:
+      High: hot standby, sync replication, failover to standby
+      Medium: standby min infra, sync replication, failover to standby & increase infrastructure
+      Low: snapshot with transaction logs, create new DB with snapshot
+   Read replicas -> for analytics applications
+   Consistency
+      Strong -> master & all replicas are in sync. Slow but useful for financial transactions
+      Eventual -> async replication b/w master & replicas. Ok with twitter,, Facebook apps etc. slight delay with few secs
+      Read after Write -> Inserts are immediately available(sync), update use eventual consistency
+  DB considerations
+      - fixed schema or schema less
+      - transaction properties like ACID
+      - latency
+      - how much data will be stored
+      - volume level of transactions.
+  Relational -> OLAP & OLTP, predefined schema, strong transactional capabilities. Most traditional apps, ERP, com, e-commerce, banking apps.
+    - cloud SQL -> 
+          Postgres, mysql, Sql Server only regional. 
+          Up to few TB’s of data. 
+          Don’t worry about os patching, backups, Point in time recovery or archives. 
+          Automatic encryption for tables & backups.
+          HA & failover to standby, sync replication
+          Read replicas across regions
+          Automatic storage increase.
+          Also schedule backups.
+          Use AWS DMS to migrate to gcp
+           Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
+          Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
+    - cloud Spanner -> huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users. Uses horizontal scaling
+  OLAP
+     - reporting apps, data warehouses, BI apps, Analytics streams
+     - BigQuery
+  NOSQL -> not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
+     - Cloud Firestore(Data store) -> 
+            Managed Serverless nosql document DB. 
+            ACID Transactions
+            Indexes, SQL like queries
+           Firestore: strong consistency
+           Small to medium DB’s
+     - Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
