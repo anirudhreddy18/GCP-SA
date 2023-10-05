@@ -93,8 +93,12 @@ VPC
   - need hub & spoke with transitive routing -> use Transit Gateway
 
     Connect other VPC’s
-    VPC Network Peering: Different VPC communicating with each other. Used for connecting VPC’s across organizations. Cannot overlap CIDR ranges.
-    AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.
+    VPC Network Peering: Different VPC communicating with each other. connect to services using internal IP’s in different projects or across organizations efficiently. Cannot overlap CIDR ranges.    
+    - All communication happen in Google network
+    - Not accessible from Internet
+    - No data transfer charges
+    AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child 
+ 
 
     On Prem Connections
     Cloud VPN -> connect from GCP to onprem resources using VPN.
@@ -275,3 +279,118 @@ Databases
            Firestore: strong consistency
            Small to medium DB’s
      - Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
+
+Serverless 
+
+App Engine (AWS Beanstalk)
+
+Load Balancing
+  Features:
+   - distribute load across instances in multiple regions & zones. Enables High Availability
+    - health check (resiliency)
+    - works with autoscaling
+    - global load balancing with single cast IP
+   Layers:
+     - layer 3 IP: transfers bits & bytes
+     - layer 4 TCP, TLS, UDP - delivery guarantee
+     - layer 7 http, https ,smtp-> application layer Most apps fall under this layer. Applications at layer 7 use layers beneath them. Ex: Https uses TCP layer underneath.
+  Client to LB over internet : TLS/SSL 
+  Load balancer to VM -> internal google network. Http is OK
+  SSL offloading -> client to LB use https & then use http. So offloading load of your VM instances..
+
+ Components:
+   - Frontend -> IP which clients use to hit LB.  
+   - Path -> ALB use based on host or path based routing
+   - Backend -> can be MIG, Containers etc. A single backend service can contain multiple backends. 
+ 
+  - can server requests by user Geo. For low latency
+- Can serve requests only from 1 region, if other region is down.
+- Global routing uses premium networking tier.
+
+Cloud RUN(ECS)
+* Container to production in seconds
+* Fully managed server less platform, Pay per use(CPU, Requests, Networking)
+* KNative
+* simple container apps, for complicated use Kubernetes
+
+  Usecases
+    Web API’s, Microservices, Event Driven Apps
+
+  Anthos -> run K8s cluster anywhere on Prem , gcp, public cloud or combination
+  Cloud run for Anthos -> deploy to anthos clusters running on Prem or GCP.
+
+
+Cloud Functions(Lambda)
+  Code will used to create container image & then deployed to Cloud Run(V2)
+   
+* Autoscaling -> new containers get created. When there is an invocation, there will a new container that will spin up & process the request. 3 concurrent requests -> 3 containers. If a container finished processing the request, then existing container can be used.
+* Cold start: a new container instance running & copying code will take time. Solution: Have some instances already running like for example 3 (increases cost)
+* 2nd Gen Adds important feature: one function can handle multiple concurrent requests. Max 1000.  Check code on how to use concurrency.
+* Trigger Bucket, Trigger Http, Trigger Topic, Trigger event filters (in EventARC)
+
+Cloud KMS
+   *  Data at rest (stored in Hard drive, DB etc)
+   *  Data in Transit (data to/from the internet, data copied from on Prem to cloud, app talking to DB)
+   *  Data in Use (Active Data in non persistent state) data in RAM
+ symmetric -> only one key used for both encryption & decryption
+ Asymmetric -> public & private Key
+  Google managed Key
+  User Managed key -> created in GCP
+  Customer Managed Key -> created on Prem  
+ 
+
+IAM And Organizations
+  - organization -> Folder -> Project -> Resources
+   Identities: Users, groups, Service Accounts, External Identities
+   Roles : Assigning Permissions
+   Policies: Binding roles to Identities.
+   User -> Gmail Account
+   Service Account -> Non human accounts
+   Groups -> Collection of Users & Service Accounts.
+   External Identities -> Azure AD Users.
+  
+  *  Always follow minimum privileged required to do job.
+* All Resources are created in Projects.
+* Separate projects per environment. DEV project, Production Project. Provide Dev’s complete access to DEV project.
+* Create separate folders for each department.
+* Billing accounts can be setup per Department.
+* Least privilege access
+* Review cloud audit logs to IAM policies & Service Accounts.
+* Store IAM logs in Cloud Buckets for long term storage.
+* Use IAM Groups when possible.
+* Root User AWS => Super Admin
+* Policy Binding -> Mapping between User & Role in a project.
+* Federate GCP Account with Identity Provider & single sign on. Azure AD with Cloud Identity 
+* Organization policies -> deny/restrict access to all users in all projects. Ex: Deny creation of Service accounts, deny resources in certain regions.
+* IAM Policy can be set as organization, folder, Project, resource level.
+* You cant restrict policy at lower level, if permission is given at a higher level.
+* Sub set of objects in GCS Bucket -> Use ACL’s
+
+Async Communication 
+  * Availability -> App is still available, when downstream svc is down
+  * Decoupling -> 
+  * Scalability. ->
+  * Durability. -> Message is not lost,  when downstream svc is down
+ Pub sub -> 
+  Highly available, Highly Scalable. SQS & SNS equivalent. Supports both push & pull
+  Topic
+   Subscription 
+   Usecases
+     Convert from sync to async workflows
+     FIFO ordering
+     Exactly once processing with dataflow
+   
+ Dataflow -> provides batch data processing & unified streaming 
+  Ex: send data from pub/sub to mongodb, Bigtable, cloud storage etc.
+  Usecases: real time fraud detection, sensor data processing, log data processing, batch processing
+  Based on Apache Beam
+  Serverless & Autoscaling
+  Equivalent services: AWS Kinesis, Kafka
+  
+ Hybrid Cloud
+  Connect on Prem Network to GCP Resources
+  Cloud VPN -> connect from on Prem to GCP over internet using VPN
+  Cloud Interconnect -> private Network, dedicated Interconnect, partner Interconnect.
+    Equivalent -> AWS Direct Connect
+ Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
+  
