@@ -319,7 +319,6 @@ Cloud RUN(ECS)
   Anthos -> run K8s cluster anywhere on Prem , gcp, public cloud or combination
   Cloud run for Anthos -> deploy to anthos clusters running on Prem or GCP.
 
-
 Cloud Functions(Lambda)
   Code will used to create container image & then deployed to Cloud Run(V2)
    
@@ -393,4 +392,83 @@ Async Communication
   Cloud Interconnect -> private Network, dedicated Interconnect, partner Interconnect.
     Equivalent -> AWS Direct Connect
  Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
+
+Cloud Operations
+  Cloud Monitoring => prometheus & grafana
+    - emit metrics for apps
+    - create graphs & dashboards
+    - create alerts 
+    - Uptime checks - checks whether the app is up or not
+    - SLO Monitoring
+  Cloud Logging  =>(splunk)
+    - Dashboard
+    - logs metrics
+    - logs router 
+    - logs explorer
+    - Auto for GKE, App Engine, Cloud run.
+ Cloud Audit Logs => AWS Cloud Trail
+    - Admin Activity Logs -> API calls that modify configuration of resources.
+    - Data Access logs => not enabled by default. Read configuration of resources.
+    - System Event Logs => Google cloud Administrative Actions.
+    - Policy Denied Logs => user or SA denied access.
+ Export/Routing logs
+    - Required bucket -> for all logs above, no charge
+    - _default bucket -> for application logs, charged based amount of logs, can change retention. For long term retention, use storage bucket or Big Query.
+ Logs routing sink -> sent logs to other services like cloud storage, big query, pub/sub, splunk etc.
+ Cloud Trace
+   - collect latency data 
+   - use traceId to view all the requests across multiple different microservices(use Cloud Trace API)
+Cloud Profiler => Used to identify perfomance bottlenecks
+Error Reporting => identify & manage top errors or recent errors.
+
+SRE
+  SRE focuses on every aspect of application: availability, performance, latency, efficiency, change management, monitoring, emergency response & capacity planning.
+ Key principles:
+  SLO - measure by availability for example
+  Share ownership with Dev’s - monitoring, emergency response & capacity planning
+Key Metrics:
+  SLI: quantitative measure of a service - LATTES
+  SLO: take one from LATTES & set a target for it, for example: 99% availability. SLI + target
+  SLA: SLO + consequences(contract) - if SLO is not met, then there will be consequences.
+   Error Budgets: 100% - SLO
+Best Practices:
+  - load shedding/rate limiting
+  - cascading failures -> circuit breaker/
+  - penetration testing -> ethical hacking to find out vulnerabilities
+  - load Testing -> Jmeter
+  - Chaos Testing -> when one or more parts of system fail. Add huge stress on layers.
+
+Object Storage
+ Low latency on all storage classes
+  Strorage classes
+   * Standard -> frequently used
+   * nearline -> once in 30 days
+   * coldline -> once a quarter
+   * Archive-> once a year
+   - Files are automatically on Server side, before storing it on disk.
+   - in Transit use https
+Encryption Server side
+  - Default - Keys automatically managed by Google
+  - Custom Keys -> Keys are managed by user in KMS. GCS SA needs to be assigned permissions to Keys
+  - Customer Supplied Keys -> Customer supplies keys when publishing objects. Pass it in Headers X-goog-encryption-algorithm etc. TO decrypt customer need to provide the correct keys. Google dosent store these keys
+Client Side Encryption
+  - File is encrypted on the client side, before uploading
+
+* SA account is associated to GCS storage by default, assign correct permissions to it ex: pub/sub publisher, KMS keys
+* Each file contains a metadata, storage class is stored as key value etc. Users can store their own metadata
+* Retention policy set it to lock for compliance needs.
+* Transfer service is recommended for transferring data more than 1 TB from onprem or anywhere. gsutil for smaller data. Larger data use Physical appliances.
+* ACLS controls access to individual objects, IAM is for all objects inside bucket. Access can be granted by IAM or ACL.
+* Limited time to access objects without having google accounts - use signed URL
+
+Releases
+  - Recreate : take down V1 & deploy V2. Causes down time.
+  - Canary: roll out few instances of V2. Traffic is sent to both V1 & V2 instances. Then rollout V2 to all instances.
+  - A/B: Rollout v2 feature to subset of users. Then decide to rollout to all or rollback.
+  - Rolling: Update 1 instances at a time or a subset. Do it until all instances are replaced in V2
+  - Rolling Batch: Add extra instances & then do a rolling update on each instances 1 at a time or subset. Restart rolling PCF.
+  - Blue green: v1 is live, create v2 environment test with checkout url, switch to V2.
+  - Shadow testing - mirror traffic from v1 to v2 or capture traffic & sent it to v2 to test with active production traffic.
+  GKE: rolling update default, rollout restart for restarting pods, blue green with ingress/service, canary with Istio.
+
   
