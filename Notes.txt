@@ -151,6 +151,7 @@ Anthos Service Mesh(Istio)
   - Role based Access to other micro services or fine grained control over specific routes
   - A/B, canary release strategies.
   - circuit breakers
+  - Service Discovery & load balancing features(Sidecar) 
   - cloud logging & cloud monitoring support.
   
 Event Arc 
