@@ -340,7 +340,7 @@ Cloud KMS
  
 
 IAM And Organizations
-  - organization -> Folder -> Project -> Resources
+  - organization -> Folder(Department(Product Suite) -> Team -> Product) -> Project(Dev, Test, Prod) -> Resources
    Identities: Users, groups, Service Accounts, External Identities
    Roles : Assigning Permissions
    Policies: Binding roles to Identities.
