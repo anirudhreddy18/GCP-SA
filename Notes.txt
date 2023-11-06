@@ -472,4 +472,7 @@ Releases
   - Shadow testing - mirror traffic from v1 to v2 or capture traffic & sent it to v2 to test with active production traffic.
   GKE: rolling update default, rollout restart for restarting pods, blue green with ingress/service, canary with Istio.
 
+Splunk Add on
+  Pull -> setup sink from logging. Sink will send logs to Pub/sub. Splunk pulls from Pub/sub 
+  Push -> setup sink from logging. Sink will send logs to Pub/sub. Dataflow will push to Splunk(similar to kafka Sink)
   
