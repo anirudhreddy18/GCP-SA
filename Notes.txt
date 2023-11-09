@@ -470,6 +470,7 @@ Releases
   - Rolling Batch: Add extra instances & then do a rolling update on each instances 1 at a time or subset. Restart rolling PCF.
   - Blue green: v1 is live, create v2 environment test with checkout url, switch to V2.
   - Shadow testing - mirror traffic from v1 to v2 or capture traffic & sent it to v2 to test with active production traffic.
+  - Feature flag: enables true continous delivery by turning on/off, Useful for rollbacks, turn code on/off.  
   GKE: rolling update default, rollout restart for restarting pods, blue green with ingress/service, canary with Istio.
 
 Splunk Add on
