@@ -84,7 +84,7 @@ VPC
   Each project has a default VPC
 
   When creating subnet:
-    Enable private google access -> Allows VM’s to connect to Google API’s. NO NAT Gateway needed, traffic never leaves Google network.
+    Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network.
     Flow logs: troubleshoot any VPC related network Issues
 ** Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
 
@@ -108,7 +108,7 @@ VPC
 
    VPC Endpoints
    AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
-   AWS Gateway endpoints -> private google access.
+   AWS Gateway endpoints -> needs to be setup using private Service connect. Traffic never leaves the VPC.
   
 
 Firewall Rules:
