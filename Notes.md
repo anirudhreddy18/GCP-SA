@@ -83,43 +83,42 @@ Service Accounts -> similar to AWS Roles, you can use Service Accounts to launch
   - VPC is global & subnets are created per region us-central-1
   - Each project has a default VPC
 
-  ## When creating subnet:
+  ### When creating subnet:
     - Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network.
     - Flow logs: troubleshoot any VPC related network Issues
     - ** Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
-
     - by default uses hub & spoke -> it means all VPC can connect to 1 central VPC. NO transitive routing
     - Full Mesh Architecture VPC Peering -> connect all vpcs, doesn’t scale well. N * n-1 /2 connections
     - need hub & spoke with transitive routing -> use Transit Gateway
 
-  ## Connect other VPC’s
+  ### Connect other VPC’s
     - VPC Network Peering: Different VPC communicating with each other. connect to services using internal IP’s in different projects or across organizations efficiently. Cannot overlap CIDR ranges.    
     - All communication happen in Google network
     - Not accessible from Internet
     - No data transfer charges
-    - AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child 
+    - AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child. 
  
 
-  ## On Prem Connections
+  ### On Prem Connections
     - Cloud VPN -> connect from GCP to onprem resources using VPN.
     - AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. private Network, dedicated Interconnect, partner Interconnect. 
         - connect from GCP to onprem resources on private Network which is fast.
         - connect on perm resources directly to VPC.
     - Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
 
-  ## VPC Endpoints
+  ### VPC Endpoints
    - AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
    - AWS Gateway endpoints -> needs to be setup using private Service connect. Traffic never leaves the VPC.
   
 
- ## Firewall Rules:
+  ### Firewall Rules:
   - Ingress rule, egress rules 
   - can be applied within network
   -  they are global, controls ingress & egress traffic & also protects VM instances.
   - same rule applied to all instances, apply tags to specific VM & using a service account.
   - cannot share among other networks (ex: VPC Peering)
 
-## AWS Services:
+  ### AWS Services:
   Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
     
 Pub/Sub
