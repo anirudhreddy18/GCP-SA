@@ -79,7 +79,7 @@ Service Accounts -> similar to AWS Roles, you can use Service Accounts to launch
   Usecase3: on Prem to GCP API(short lived). Uses OAuth2 , Open ID, JWT Tokens. When a member needs elevated role, he can assume service account role. Similar to Deleting resources in EC2, assume role & then delete the instance. Ex2: A service in GCP needs to access another service in Another cloud (Open ID connect tokens).
  Across Projects: In project B, add the service account from Project A and then assign Storage Object Viewer permission on the bucket.
 
-VPC
+###VPC
   VPC is global & subnets are created per region us-central-1
   Each project has a default VPC
 
@@ -102,9 +102,10 @@ VPC
 
     On Prem Connections
     Cloud VPN -> connect from GCP to onprem resources using VPN.
-    AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. 
+    AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. private Network, dedicated Interconnect, partner Interconnect. 
         - connect from GCP to onprem resources on private Network which is fast.
         - connect on perm resources directly to VPC.
+    Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
 
    VPC Endpoints
    AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
@@ -367,6 +368,7 @@ IAM And Organizations
 * Sub set of objects in GCS Bucket -> Use ACL’s
 
 Async Communication 
+  Tools: SQS, Event Bridge, Kinesis/Kafka, S3(payload larger than 256 KB) 
   * Availability -> App is still available, when downstream svc is down
   * Decoupling -> 
   * Scalability. ->
@@ -386,13 +388,7 @@ Async Communication
   Based on Apache Beam
   Serverless & Autoscaling
   Equivalent services: AWS Kinesis, Kafka
-  
- Hybrid Cloud
-  Connect on Prem Network to GCP Resources
-  Cloud VPN -> connect from on Prem to GCP over internet using VPN
-  Cloud Interconnect -> private Network, dedicated Interconnect, partner Interconnect.
-    Equivalent -> AWS Direct Connect
- Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
+ 
 
 Cloud Operations
   Cloud Monitoring => prometheus & grafana
