@@ -84,12 +84,12 @@ Service Accounts -> similar to AWS Roles, you can use Service Accounts to launch
   - Each project has a default VPC
 
   ### When creating subnet:
-    - Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network.
-    - Flow logs: troubleshoot any VPC related network Issues
-    - ** Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
-    - by default uses hub & spoke -> it means all VPC can connect to 1 central VPC. NO transitive routing
-    - Full Mesh Architecture VPC Peering -> connect all vpcs, doesn’t scale well. N * n-1 /2 connections
-    - need hub & spoke with transitive routing -> use Transit Gateway
+   - Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network.
+   - Flow logs: troubleshoot any VPC related network Issues
+   - Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
+   - by default uses hub & spoke -> it means all VPC can connect to 1 central VPC. NO transitive routing
+   - Full Mesh Architecture VPC Peering -> connect all vpcs, doesn’t scale well. N * n-1 /2 connections
+   - need hub & spoke with transitive routing -> use Transit Gateway
 
   ### Connect other VPC’s
     - VPC Network Peering: Different VPC communicating with each other. connect to services using internal IP’s in different projects or across organizations efficiently. Cannot overlap CIDR ranges.    
