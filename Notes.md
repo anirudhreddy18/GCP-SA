@@ -1,7 +1,6 @@
-GCP
+# GCP
 
-Login
-Credentials created location $HOME/.config/gcloud/application_default_credentials.json
+Login: Credentials created location $HOME/.config/gcloud/application_default_credentials.json
 
 - gcloud init   -> setup configuration
 - gcloud auth application-default login -> install Application default Credentials file
