@@ -68,12 +68,6 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
 When an object is uploaded to bucket, directly invoke a cloud function
 When an object is uploaded to bucket, setup a notification to pub/sub & then respond to that event using Cloud function/cloud run.
 When an object is uploaded to bucket, directly trigger a cloud run service uses eventArc.
-
-## IAM
- GCP ROLES -> AWS policies
- GCP Policy -> AWS Role Binding
- Roles -> it’s all about permissions. Can have multiple permissions
- Policy -> Assigning role/roles to User. 
  
 ### Roles
  - Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
@@ -264,34 +258,30 @@ Event Driven Architectures
       - volume level of transactions.
   8. Relational -> OLAP & OLTP, predefined schema, strong transactional capabilities. Most traditional apps, ERP, com, e-commerce, banking apps.
   ### cloud SQL  
-    - Postgres, mysql, Sql Server only regional. 
-    - Up to few TB’s of data. 
-    - Don’t worry about os patching, backups, Point in time recovery or archives. 
-    - Automatic encryption for tables & backups.
-    - HA & failover to standby, sync replication
-    - Read replicas across regions
-    - Automatic storage increase.
-    - Also schedule backups.
-    - Use AWS DMS to migrate to gcp
-    - Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
-    - Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
-    - cloud Spanner -> huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users. Uses horizontal scaling
+  - Postgres, mysql, Sql Server only regional. 
+  - Up to few TB’s of data. 
+  - Don’t worry about os patching, backups, Point in time recovery or archives. 
+  - Automatic encryption for tables & backups.
+  - Automatic storage increase.
+  - Also schedule backups.
+  - Use AWS DMS to migrate to gcp
+  - Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
+  - Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
+  - cloud Spanner -> huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users. Uses horizontal scaling
     
   ### OLAP
-     - reporting apps, data warehouses, BI apps, Analytics streams
-     - BigQuery
+  - reporting apps, data warehouses, BI apps, Analytics streams
+  - BigQuery
      
   ### NOSQL 
-    not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
-    
-     - Cloud Firestore(Data store) -> 
-            Managed Serverless nosql document DB. 
-            ACID Transactions
-            Indexes, SQL like queries
-           Firestore: strong consistency
-           Small to medium DB’s
-     - Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
-
+   1. not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
+   2. Cloud Firestore(Data store) -> 
+      - Managed Serverless nosql document DB. 
+      - ACID Transactions
+      - Indexes, SQL like queries
+      - Firestore: strong consistency
+      - Small to medium DB’s
+   3. Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
 
 ### Load Balancing
  1. Features:
@@ -324,15 +314,15 @@ Event Driven Architectures
 * 2nd Gen Adds important feature: one function can handle multiple concurrent requests. Max 1000.  Check code on how to use concurrency.
 * Trigger Bucket, Trigger Http, Trigger Topic, Trigger event filters (in EventARC)
 
-Cloud KMS
-   *  Data at rest (stored in Hard drive, DB etc)
-   *  Data in Transit (data to/from the internet, data copied from on Prem to cloud, app talking to DB)
-   *  Data in Use (Active Data in non persistent state) data in RAM
- symmetric -> only one key used for both encryption & decryption
- Asymmetric -> public & private Key
-  Google managed Key
-  User Managed key -> created in GCP
-  Customer Managed Key -> created on Prem  
+## Cloud KMS
+   * Data at rest (stored in Hard drive, DB etc)
+   * Data in Transit (data to/from the internet, data copied from on Prem to cloud, app talking to DB)
+   * Data in Use (Active Data in non persistent state) data in RAM
+   * symmetric -> only one key used for both encryption & decryption
+   * Asymmetric -> public & private Key
+   * Google managed Key
+   * User Managed key -> created in GCP
+   * Customer Managed Key -> created on Prem  
  
 
 ## IAM And Organizations
@@ -361,6 +351,10 @@ Cloud KMS
 * IAM Policy can be set as organization, folder, Project, resource level.
 * You cant restrict policy at lower level, if permission is given at a higher level.
 * Sub set of objects in GCS Bucket -> Use ACL’s
+* GCP ROLES -> AWS policies
+* GCP Policy -> AWS Role Binding
+* Roles -> it’s all about permissions. Can have multiple permissions
+* Policy -> Assigning role/roles to User. 
 
 ## Async Communication 
   * Tools: SQS, Event Bridge, Kinesis/Kafka, S3(payload larger than 256 KB) 
