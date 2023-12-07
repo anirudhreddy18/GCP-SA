@@ -63,11 +63,6 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   - Provides pod & cluster Autoscaling
   - gcloud container clusters get-credentials CLUSTER --region us-central1 --project PROJECT_ID
   - can add more than 1 node pool. Within Node pool, you can configure instance types etc.
-
-## GCP Serverless
-When an object is uploaded to bucket, directly invoke a cloud function
-When an object is uploaded to bucket, setup a notification to pub/sub & then respond to that event using Cloud function/cloud run.
-When an object is uploaded to bucket, directly trigger a cloud run service uses eventArc.
  
 ### Roles
  - Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
@@ -378,7 +373,10 @@ Event Driven Architectures
      - Based on Apache Beam
      - Serverless & Autoscaling
      - Equivalent services: AWS Kinesis, Kafka
- 
+  6. **Scenarios**
+     - When an object is uploaded to bucket, directly invoke a cloud function
+     - When an object is uploaded to bucket, setup a notification to pub/sub & then respond to that event using Cloud function/cloud run.
+     - When an object is uploaded to bucket, directly trigger a cloud run service uses eventArc.   
 
 ## Cloud Operations
  1. Cloud Monitoring => prometheus & grafana
