@@ -14,9 +14,19 @@ Other CLI tools: gsutil, Kubectl
 Cloud Shell: files in home directory $HOME will persist b/w sessions, (scripts, config files etc.)
 
 ## Cloud run
-AWS Equivalent : ECS
-Docker container
-From source repo builds
+* Container to production in seconds
+* Fully managed server less platform, Pay per use(CPU, Requests, Networking)
+* KNative
+* simple container apps, for complicated use Kubernetes
+
+### Usecases
+  1. Web API’s, Microservices, Event Driven Apps
+  2. Anthos -> run K8s cluster anywhere on Prem , gcp, public cloud or combination
+  3. Cloud run for Anthos -> deploy to anthos clusters running on Prem or GCP.**
+  4. AWS Equivalent : ECS
+  5. Deploy 
+      - Docker container
+      - From source repo builds
 
 **Type 1**
 - Event driven & streaming
@@ -77,6 +87,9 @@ When an object is uploaded to bucket, directly trigger a cloud run service uses 
  - Usecase 2:On premise -> GCP(long lived). Create a service account with key, use that key to authenticate. Export Google_application_credentials=/path/to/file. Use client libraries with Application Default Credentials(ADC).
  - Usecase3: on Prem to GCP API(short lived). Uses OAuth2 , Open ID, JWT Tokens. When a member needs elevated role, he can assume service account role. Similar to Deleting resources in EC2, assume role & then delete the instance. Ex2: A service in GCP needs to access another service in Another cloud (Open ID connect tokens).
 - Across Projects: In project B, add the service account from Project A and then assign Storage Object Viewer permission on the bucket.
+- can be used as identity(user)
+- can be used as policy(user can impersonate SA) - similar to AWS Role for elevated access
+- can be assigned to Compute Engine to make API calls to other GCP Services (similar to AWS Roles assigned to Lambda/EC2).
 
 ## VPC
   - VPC is global & subnets are created per region us-central-1
@@ -91,19 +104,19 @@ When an object is uploaded to bucket, directly trigger a cloud run service uses 
    - need hub & spoke with transitive routing -> use Transit Gateway
 
   ### Connect other VPC’s
-    - VPC Network Peering: Different VPC communicating with each other. connect to services using internal IP’s in different projects or across organizations efficiently. Cannot overlap CIDR ranges.    
-    - All communication happen in Google network
-    - Not accessible from Internet
-    - No data transfer charges
-    - AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child. 
+   - VPC Network Peering: Different VPC communicating with each other. connect to services using internal IP’s in different projects or across organizations efficiently. Cannot overlap CIDR ranges.    
+  - All communication happen in Google network
+  - Not accessible from Internet
+  - No data transfer charges
+  - AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child. 
  
 
   ### On Prem Connections
-    - Cloud VPN -> connect from GCP to onprem resources using VPN.
-    - AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. private Network, dedicated Interconnect, partner Interconnect. 
+  1. Cloud VPN -> connect from GCP to onprem resources using VPN.
+  2. AWS Direct Connect/Cloud Interconnect = connect on premises resources & cloud. private Network, dedicated Interconnect, partner Interconnect. 
         - connect from GCP to onprem resources on private Network which is fast.
         - connect on perm resources directly to VPC.
-    - Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
+  3. Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
 
   ### VPC Endpoints
    - AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
@@ -120,17 +133,12 @@ When an object is uploaded to bucket, directly trigger a cloud run service uses 
   ### AWS Services:
   Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
     
-Pub/Sub
+## Pub/Sub
  - Event Driven
  - Streaming Analytics (pair with Dataflow & send data to BigQuery)
  - pub/sub + Dataflow -> Streaming data (AWS Kinesis)
 
-Service Account
- - can be used as identity(user)
- - can be used as policy(user can impersonate SA) - similar to AWS Role for elevated access
- - can be assigned to Compute Engine to make API calls to other GCP Services (similar to AWS Roles assigned to Lambda/EC2).
-
-Big Data & Analytics Services
+## Big Data & Analytics Services
  - Pub/sub
  - BigQuery -> Data warehouse, OLAP, AWS Redshift
  - Google CLoud Studio -> Managed visual analytics Service
@@ -141,7 +149,7 @@ Big Data & Analytics Services
  - Cloud Composer -> workflow orchestration service across clouds & on premise Data centers
  - data lake -> single platform with combination of solutions for data storage, data management & Analytics.
 
-Anthos Service Mesh(Istio)
+## Anthos Service Mesh(Istio)
   Sidecar container to implement common Microservice features.
   security, observability, and reliability
   - Mutual TLS with end to end encryption
@@ -153,13 +161,14 @@ Anthos Service Mesh(Istio)
   - Service Discovery & load balancing features(Sidecar) 
   - cloud logging & cloud monitoring support.
   
-Event Arc 
-  Cloud events common specification
-  Event Provider:
-    Direct: pub/sub, cloud storage, cloud IOT, Cloud Memory storage etc.
-    Indirect: uses audit logs entries(GCE, GKE etc)
-  Event Destination:
-     Cloud functions, cloud run, GKE, Workflows.
+## Event Arc 
+  1. Cloud events common specification
+  2. Event Provider:
+     - Direct: pub/sub, cloud storage, cloud IOT, Cloud Memory storage etc.
+     - Indirect: uses audit logs entries(GCE, GKE etc)
+  3. Event Destination: Cloud functions, cloud run, GKE, Workflows.
+
+  ### Uses   
   - partner or 3rd party events - create event driven apps
   - schema registry
   - multiple consumers
@@ -174,11 +183,10 @@ Event Driven Architectures
   * easily add another consumer without producer worrying
   * Decoupling
 
-APIGEE
- Features: Authentication & Authorization, routing/multiple versions, latency, caching, Aggregation, Rate limiting.
- Design, secure, publish, analyze, monitor, monetize, scale 
- AWS: AWS API Gateway
-
+## APIGEE
+ * Features: Authentication & Authorization, routing/multiple versions, latency, caching, Aggregation, Rate limiting.
+ * Design, secure, publish, analyze, monitor, monetize, scale 
+ * AWS: AWS API Gateway
  * On premise, google cloud & anywhere
  * similar to Mulesoft/Anypoint studio
  * Auto discovery b/w apps to integrate & connect
@@ -190,7 +198,7 @@ APIGEE
  * Assign a public IP Address to backend services, apply policies as proxy
  * After product is available, register as app developer, create api key & then send requests.
 
-Workflows
+## Workflows
   - used for orchestration (mostly synchronous or http). Can also be used for async work processes using SQS & task tokens.
   - choreography uses Event Driven style no step functions/workflows needed.
   - use orchestration within Microservices & uses choreography for interacting with micro services
@@ -198,23 +206,24 @@ Workflows
   - SAGA rollback transactions in distributed systems.
   - orchestration spring boot:  uses request queue & response queue. Orchestrator sends request & then reads response from another topic/queue.
 
-API Gateway
+## API Gateway
   Used for serverless, setup is simple.
   - Cloud functions, cloud run & App Engine
   - Serverless
   - metrics, tracing & logging
 
-Identity Platform
+## Identity Platform
   Authentication & Authorization for web apps, mobile etc.
   SAML, OIDC, etc.
   AWS : AWS Cognito
 
-Service Directory
-  - Service Discovery for oN perm, cloud apps
+## Service Directory
+  - Service Discovery for on perm, cloud apps
+  - AWS: AWS Cloud Map
 
-HA
- - Cloud SQL: Multi AZ regional with standup in a different zone
- - GKE : multi master with regional clusters
+## HA
+- Cloud SQL: Multi AZ regional with standup in a different zone
+- GKE : multi master with regional clusters
 - Managed Services: cloud run, cloud function etc.
 - Compute/VM’s : global load balancing with instances distributed across multiple regions.
 - Global > multi -regional > regional > zonal
@@ -223,55 +232,58 @@ HA
 - Network Tier: Premium Network Tier
 - Hybrid Connectivity: Dedicated Interconnect > Partner Interconnect > VPN
 
-Scalability
+## Scalability
   - MIG or instance groups - increase VM’s by Autoscaling
   - GKE: increase pods., cluster Autoscaling - increase nodes.
   - All Serverless services support Autoscaling.
   - SQL databases needs to be vertically scaled(cloud SQL, cloud spanner, BigTable, Data proc) not server less.
 
-Security
+## Security
   - Cloud KMS - Digital signatures. Public & private key
   - Cloud Armor - DDOS Attacks, OWASP top 10 attacks(XSS, SQL)
   - Secret Manager - store passwords, rotate keys with cloud functions, auditing with cloud Audit logs, Encrypted by default.
 
-Databases
-  - Availability -> having standby instances in different zones or regions. Failover to standby when master is not available.
-  - Durability -> standbys, snapshots, transaction logs & replicas in different zones or regions.
-   RTO - recovery time objective -> max time app can be down
-   RPO -> recovery point objective -> max data loss 
-    Options:
-      High: hot standby, sync replication, failover to standby
-      Medium: standby min infra, sync replication, failover to standby & increase infrastructure
-      Low: snapshot with transaction logs, create new DB with snapshot
-   Read replicas -> for analytics applications
-   Consistency
-      Strong -> master & all replicas are in sync. Slow but useful for financial transactions
-      Eventual -> async replication b/w master & replicas. Ok with twitter,, Facebook apps etc. slight delay with few secs
-      Read after Write -> Inserts are immediately available(sync), update use eventual consistency
-  DB considerations
+## Databases
+  1. Availability -> having standby instances in different zones or regions. Failover to standby when master is not available.
+  2. Durability -> standbys, snapshots, transaction logs & replicas in different zones or regions.
+  3. RTO - recovery time objective -> max time app can be down
+  4. RPO -> recovery point objective -> max data loss 
+      - High: hot standby, sync replication, failover to standby
+      - Medium: standby min infra, sync replication, failover to standby & increase infrastructure
+      - Low: snapshot with transaction logs, create new DB with snapshot
+  5. Read replicas -> for analytics applications
+  6. Consistency
+      - Strong -> master & all replicas are in sync. Slow but useful for financial transactions
+      - Eventual -> async replication b/w master & replicas. Ok with twitter, Facebook apps etc. slight delay with few secs
+      - Read after Write -> Inserts are immediately available(sync), update use eventual consistency
+  7. DB considerations
       - fixed schema or schema less
       - transaction properties like ACID
       - latency
       - how much data will be stored
       - volume level of transactions.
-  Relational -> OLAP & OLTP, predefined schema, strong transactional capabilities. Most traditional apps, ERP, com, e-commerce, banking apps.
-    - cloud SQL -> 
-          Postgres, mysql, Sql Server only regional. 
-          Up to few TB’s of data. 
-          Don’t worry about os patching, backups, Point in time recovery or archives. 
-          Automatic encryption for tables & backups.
-          HA & failover to standby, sync replication
-          Read replicas across regions
-          Automatic storage increase.
-          Also schedule backups.
-          Use AWS DMS to migrate to gcp
-           Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
-          Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
+  8. Relational -> OLAP & OLTP, predefined schema, strong transactional capabilities. Most traditional apps, ERP, com, e-commerce, banking apps.
+  ### cloud SQL  
+    - Postgres, mysql, Sql Server only regional. 
+    - Up to few TB’s of data. 
+    - Don’t worry about os patching, backups, Point in time recovery or archives. 
+    - Automatic encryption for tables & backups.
+    - HA & failover to standby, sync replication
+    - Read replicas across regions
+    - Automatic storage increase.
+    - Also schedule backups.
+    - Use AWS DMS to migrate to gcp
+    - Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
+    - Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
     - cloud Spanner -> huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users. Uses horizontal scaling
-  OLAP
+    
+  ### OLAP
      - reporting apps, data warehouses, BI apps, Analytics streams
      - BigQuery
-  NOSQL -> not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
+     
+  ### NOSQL 
+    not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
+    
      - Cloud Firestore(Data store) -> 
             Managed Serverless nosql document DB. 
             ACID Transactions
@@ -280,46 +292,31 @@ Databases
            Small to medium DB’s
      - Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
 
-Serverless 
 
-App Engine (AWS Beanstalk)
-
-Load Balancing
-  Features:
-   - distribute load across instances in multiple regions & zones. Enables High Availability
+### Load Balancing
+ 1. Features:
+    - distribute load across instances in multiple regions & zones. Enables High Availability
     - health check (resiliency)
     - works with autoscaling
     - global load balancing with single cast IP
-   Layers:
+ 2. Layers:
      - layer 3 IP: transfers bits & bytes
      - layer 4 TCP, TLS, UDP - delivery guarantee
      - layer 7 http, https ,smtp-> application layer Most apps fall under this layer. Applications at layer 7 use layers beneath them. Ex: Https uses TCP layer underneath.
-  Client to LB over internet : TLS/SSL 
-  Load balancer to VM -> internal google network. Http is OK
-  SSL offloading -> client to LB use https & then use http. So offloading load of your VM instances..
+3. Client to LB over internet : TLS/SSL 
+4. Load balancer to VM -> internal google network. Http is OK
+5. SSL offloading -> client to LB use https & then use http. So offloading load of your VM instances..
 
- Components:
+ ### Components:
    - Frontend -> IP which clients use to hit LB.  
    - Path -> ALB use based on host or path based routing
    - Backend -> can be MIG, Containers etc. A single backend service can contain multiple backends. 
  
-  - can server requests by user Geo. For low latency
-- Can serve requests only from 1 region, if other region is down.
-- Global routing uses premium networking tier.
+   - can server requests by user Geo. For low latency
+   - Can serve requests only from 1 region, if other region is down.
+   - Global routing uses premium networking tier.
 
-Cloud RUN(ECS)
-* Container to production in seconds
-* Fully managed server less platform, Pay per use(CPU, Requests, Networking)
-* KNative
-* simple container apps, for complicated use Kubernetes
-
-  Usecases
-    Web API’s, Microservices, Event Driven Apps
-
-  Anthos -> run K8s cluster anywhere on Prem , gcp, public cloud or combination
-  Cloud run for Anthos -> deploy to anthos clusters running on Prem or GCP.
-
-Cloud Functions(Lambda)
+## Cloud Functions(Lambda)
   Code will used to create container image & then deployed to Cloud Run(V2)
    
 * Autoscaling -> new containers get created. When there is an invocation, there will a new container that will spin up & process the request. 3 concurrent requests -> 3 containers. If a container finished processing the request, then existing container can be used.
@@ -416,38 +413,37 @@ Cloud Operations
 Cloud Profiler => Used to identify perfomance bottlenecks
 Error Reporting => identify & manage top errors or recent errors.
 
-SRE
-  SRE focuses on every aspect of application: availability, performance, latency, efficiency, change management, monitoring, emergency response & capacity planning.
- Key principles:
-  SLO - measure by availability for example
-  Share ownership with Dev’s - monitoring, emergency response & capacity planning
-Key Metrics:
-  SLI: quantitative measure of a service - LATTES
-  SLO: take one from LATTES & set a target for it, for example: 99% availability. SLI + target
-  SLA: SLO + consequences(contract) - if SLO is not met, then there will be consequences.
-   Error Budgets: 100% - SLO
-Best Practices:
+## SRE
+  1. SRE focuses on every aspect of application: availability, performance, latency, efficiency, change management, monitoring, emergency response & capacity planning.
+ 2. Key principles:
+   * SLO - measure by availability for example
+   * Share ownership with Dev’s - monitoring, emergency response & capacity planning
+3. Key Metrics:
+  - SLI: quantitative measure of a service - LATTES
+  - SLO: take one from LATTES & set a target for it, for example: 99% availability. SLI + target
+  - SLA: SLO + consequences(contract) - if SLO is not met, then there will be consequences.
+  - Error Budgets: 100% - SLO
+4. Best Practices:
   - load shedding/rate limiting
   - cascading failures -> circuit breaker/
   - penetration testing -> ethical hacking to find out vulnerabilities
   - load Testing -> Jmeter
   - Chaos Testing -> when one or more parts of system fail. Add huge stress on layers.
 
-Object Storage
- Low latency on all storage classes
-  Strorage classes
-   * Standard -> frequently used
-   * nearline -> once in 30 days
-   * coldline -> once a quarter
-   * Archive-> once a year
-   - Files are automatically on Server side, before storing it on disk.
-   - in Transit use https
-Encryption Server side
-  - Default - Keys automatically managed by Google
-  - Custom Keys -> Keys are managed by user in KMS. GCS SA needs to be assigned permissions to Keys
-  - Customer Supplied Keys -> Customer supplies keys when publishing objects. Pass it in Headers X-goog-encryption-algorithm etc. TO decrypt customer need to provide the correct keys. Google dosent store these keys
-Client Side Encryption
-  - File is encrypted on the client side, before uploading
+## Object Storage
+ 1. Low latency on all storage classes
+ 2. Strorage classes
+    * Standard -> frequently used
+    * nearline -> once in 30 days
+    * coldline -> once a quarter
+    * Archive-> once a year
+3. Files are automatically on Server side, before storing it on disk
+4. in Transit use https
+5. Encryption Server side
+   - Default - Keys automatically managed by Google
+   - Custom Keys -> Keys are managed by user in KMS. GCS SA needs to be assigned permissions to Keys
+6. Client Side Encryption
+7. File is encrypted on the client side, before uploading
 
 * SA account is associated to GCS storage by default, assign correct permissions to it ex: pub/sub publisher, KMS keys
 * Each file contains a metadata, storage class is stored as key value etc. Users can store their own metadata
@@ -456,7 +452,7 @@ Client Side Encryption
 * ACLS controls access to individual objects, IAM is for all objects inside bucket. Access can be granted by IAM or ACL.
 * Limited time to access objects without having google accounts - use signed URL
 
-Releases
+## Releases
   - Recreate : take down V1 & deploy V2. Causes down time.
   - Canary: roll out few instances of V2. Traffic is sent to both V1 & V2 instances. Then rollout V2 to all instances.
   - A/B: Rollout v2 feature to subset of users. Then decide to rollout to all or rollback.
@@ -467,7 +463,7 @@ Releases
   - Feature flag: enables true continous delivery by turning on/off, Useful for rollbacks, turn code on/off.  
   GKE: rolling update default, rollout restart for restarting pods, blue green with ingress/service, canary with Istio.
 
-Splunk Add on
+## Splunk Add on
   Pull -> setup sink from logging. Sink will send logs to Pub/sub. Splunk pulls from Pub/sub 
   Push -> setup sink from logging. Sink will send logs to Pub/sub. Dataflow will push to Splunk(similar to kafka Sink)
   
