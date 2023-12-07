@@ -335,17 +335,17 @@ Cloud KMS
   Customer Managed Key -> created on Prem  
  
 
-IAM And Organizations
+## IAM And Organizations
   - organization -> Folder(Department(Product Suite) -> Team -> Product) -> Project(Dev, Test, Prod) -> Resources
-   Identities: Users, groups, Service Accounts, External Identities
-   Roles : Assigning Permissions
-   Policies: Binding roles to Identities.
-   User -> Gmail Account
-   Service Account -> Non human accounts
-   Groups -> Collection of Users & Service Accounts.
-   External Identities -> Azure AD Users.
+  - Identities: Users, groups, Service Accounts, External Identities
+  - Roles : Assigning Permissions
+  - Policies: Binding roles to Identities.
+  - User -> Gmail Account
+  - Service Account -> Non human accounts
+  - Groups -> Collection of Users & Service Accounts.
+  - External Identities -> Azure AD Users.
   
-  *  Always follow minimum privileged required to do job.
+*  Always follow minimum privileged required to do job.
 * All Resources are created in Projects.
 * Separate projects per environment. DEV project, Production Project. Provide Dev’s complete access to DEV project.
 * Create separate folders for each department.
@@ -362,56 +362,57 @@ IAM And Organizations
 * You cant restrict policy at lower level, if permission is given at a higher level.
 * Sub set of objects in GCS Bucket -> Use ACL’s
 
-Async Communication 
-  Tools: SQS, Event Bridge, Kinesis/Kafka, S3(payload larger than 256 KB) 
+## Async Communication 
+  * Tools: SQS, Event Bridge, Kinesis/Kafka, S3(payload larger than 256 KB) 
   * Availability -> App is still available, when downstream svc is down
   * Decoupling -> 
   * Scalability. ->
   * Durability. -> Message is not lost,  when downstream svc is down
- Pub sub -> 
-  Highly available, Highly Scalable. SQS & SNS equivalent. Supports both push & pull
-  Topic
-   Subscription 
-   Usecases
-     Convert from sync to async workflows
-     FIFO ordering
-     Exactly once processing with dataflow
+  **Pub sub** 
+  1. Highly available, Highly Scalable. SQS & SNS equivalent. Supports both push & pull
+  2. Topic
+  3. Subscription 
+  4. Usecases
+     - Convert from sync to async workflows
+     - FIFO ordering
+     - Exactly once processing with dataflow
    
- Dataflow -> provides batch data processing & unified streaming 
-  Ex: send data from pub/sub to mongodb, Bigtable, cloud storage etc.
-  Usecases: real time fraud detection, sensor data processing, log data processing, batch processing
-  Based on Apache Beam
-  Serverless & Autoscaling
-  Equivalent services: AWS Kinesis, Kafka
+  5. Dataflow
+     - provides batch data processing & unified streaming 
+     - Ex: send data from pub/sub to mongodb, Bigtable, cloud storage etc.
+     - Usecases: real time fraud detection, sensor data processing, log data processing, batch processing
+     - Based on Apache Beam
+     - Serverless & Autoscaling
+     - Equivalent services: AWS Kinesis, Kafka
  
 
-Cloud Operations
-  Cloud Monitoring => prometheus & grafana
+## Cloud Operations
+ 1. Cloud Monitoring => prometheus & grafana
     - emit metrics for apps
     - create graphs & dashboards
     - create alerts 
     - Uptime checks - checks whether the app is up or not
     - SLO Monitoring
-  Cloud Logging  =>(splunk)
+ 2. Cloud Logging  =>(splunk)
     - Dashboard
     - logs metrics
     - logs router 
     - logs explorer
     - Auto for GKE, App Engine, Cloud run.
- Cloud Audit Logs => AWS Cloud Trail
+ 3. Cloud Audit Logs => AWS Cloud Trail
     - Admin Activity Logs -> API calls that modify configuration of resources.
     - Data Access logs => not enabled by default. Read configuration of resources.
     - System Event Logs => Google cloud Administrative Actions.
     - Policy Denied Logs => user or SA denied access.
- Export/Routing logs
+ 4. Export/Routing logs
     - Required bucket -> for all logs above, no charge
     - _default bucket -> for application logs, charged based amount of logs, can change retention. For long term retention, use storage bucket or Big Query.
- Logs routing sink -> sent logs to other services like cloud storage, big query, pub/sub, splunk etc.
- Cloud Trace
+ 5. Logs routing sink -> sent logs to other services like cloud storage, big query, pub/sub, splunk etc.
+ 6. Cloud Trace
    - collect latency data 
    - use traceId to view all the requests across multiple different microservices(use Cloud Trace API)
-Cloud Profiler => Used to identify perfomance bottlenecks
-Error Reporting => identify & manage top errors or recent errors.
+ 7. Cloud Profiler => Used to identify perfomance bottlenecks
+ 8. Error Reporting => identify & manage top errors or recent errors.
 
 ## SRE
   1. SRE focuses on every aspect of application: availability, performance, latency, efficiency, change management, monitoring, emergency response & capacity planning.
