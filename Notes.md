@@ -1,82 +1,82 @@
 # GCP
 
-** Login: Credentials created location $HOME/.config/gcloud/application_default_credentials.json **
+**Login: Credentials created location $HOME/.config/gcloud/application_default_credentials.json**
 
 - gcloud init   -> setup configuration
 - gcloud auth application-default login -> install Application default Credentials file
 - gloud auth service-account -> use service account to authenticate.
 - gcloud config list -> lists all the config ex: dev, test, prod etc.
-Region, Zone, account(user/SA), project
+  
+GCP Terminology: Region, Zone, account(user/SA), project
+
 Other CLI tools: gsutil, Kubectl
+
 Cloud Shell: files in home directory $HOME will persist b/w sessions, (scripts, config files etc.)
 
-Cloud run
+## Cloud run
 AWS Equivalent : ECS
 Docker container
 From source repo builds
 
-Type 1
-Event driven & streaming
-Web apps
-APIS and microservices
+**Type 1**
+- Event driven & streaming
+- Web apps
+- APIS and microservices
 
-Batch Jobs
+**Batch Jobs**
  - DB migration
  - processing files in bucket
  -  send invoices
-- Database query & upload results.
+ - Database query & upload results.
 
 EDA:  - 60+ cloud sources
+ - Event Arc
  - Cloud Storage via Cloud Audit Logs
  - Custom apps publishing to Pub/Sub
  
-EDA Cloud Run for Anthos -> KNative Serverless functions that run on K8s
+EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on K8s
  - 60+ cloud sources
  - Cloud Storage via Cloud Audit Logs
  - Custom apps publishing to Pub/Sub
  - Custom Events
 
-GKE
+## GKE
   - cluster: group of compute engine instances. Need to create a cluster to run workloads
   - master: manages the cluster
   - worker node: all the workloads run here
-  Zonal Cluster: single control plane, run in same zone
-  Multi-zonal cluster: single control plane, but nodes running in multiple zones.
-  Regional Cluster: Replicas of control plane in multiple zones of region. Nodes also run in same zone as control plane. HA
-  Private Cluster: VPC-native cluster. Nodes only have internal IP’s.
-  Alpha cluster: test new K8s features.
-  Ingress: Provide external access to services in cluster. Provides load balancing & SSL.
-  Provides pod & cluster Autoscaling
+  - Zonal Cluster: single control plane, run in same zone
+  - Multi-zonal cluster: single control plane, but nodes running in multiple zones.
+  - Regional Cluster: Replicas of control plane in multiple zones of region. Nodes also run in same zone as control plane. HA
+  - Private Cluster: VPC-native cluster. Nodes only have internal IP’s.
+  - Alpha cluster: test new K8s features.
+  - Ingress: Provide external access to services in cluster. Provides load balancing & SSL.
+  - Provides pod & cluster Autoscaling
   - gcloud container clusters get-credentials CLUSTER --region us-central1 --project PROJECT_ID
   - can add more than 1 node pool. Within Node pool, you can configure instance types etc.
 
-GCR
-curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" \
-| tar xz docker-credential-gcr \
-&& chmod +x docker-credential-gcr && sudo mv docker-credential-gcr /usr/bin/
-
-GCP Serverless
+## GCP Serverless
 When an object is uploaded to bucket, directly invoke a cloud function
 When an object is uploaded to bucket, setup a notification to pub/sub & then respond to that event using Cloud function/cloud run.
 When an object is uploaded to bucket, directly trigger a cloud run service uses eventArc.
 
-IAM
+## IAM
  GCP ROLES -> AWS policies
  GCP Policy -> AWS Role Binding
  Roles -> it’s all about permissions. Can have multiple permissions
  Policy -> Assigning role/roles to User. 
  
-Roles
- Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
- Predefined -> storageAdmin etc.
- Custom -> Create a role, add permissions. Example: object.get, object.list
+### Roles
+ - Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
+ - Predefined -> storageAdmin etc.
+ - Custom -> Create a role, add permissions. Example: object.get, object.list
 
-Service Accounts -> similar to AWS Roles, you can use Service Accounts to launch VM’s etc. Create a service account, add roles to Service account.
+### Service Accounts
+ - similar to AWS Roles, you can use Service Accounts to launch VM’s etc. Create a service account, add roles to Service account.
   Usecase1: Use that role when launching a VM. Users wanting to use service account to launch a VM, should have necessary permissions to have access service account. Similar to Sts:AssumeRole.
-  They don’t use passwords, uses Public/private Keys. Automatically rotated
-  Usecase 2:On premise -> GCP(long lived). Create a service account with key, use that key to authenticate. Export Google_application_credentials=/path/to/file. Use client libraries with Application Default Credentials(ADC).
-  Usecase3: on Prem to GCP API(short lived). Uses OAuth2 , Open ID, JWT Tokens. When a member needs elevated role, he can assume service account role. Similar to Deleting resources in EC2, assume role & then delete the instance. Ex2: A service in GCP needs to access another service in Another cloud (Open ID connect tokens).
- Across Projects: In project B, add the service account from Project A and then assign Storage Object Viewer permission on the bucket.
+ - They don’t use passwords, uses Public/private Keys. Automatically rotated
+ - Usecase 2:On premise -> GCP(long lived). Create a service account with key, use that key to authenticate. Export Google_application_credentials=/path/to/file. Use client libraries with Application Default Credentials(ADC).
+ - Usecase3: on Prem to GCP API(short lived). Uses OAuth2 , Open ID, JWT Tokens. When a member needs elevated role, he can assume service account role. Similar to Deleting resources in EC2, assume role & then delete the instance. Ex2: A service in GCP needs to access another service in Another cloud (Open ID connect tokens).
+- Across Projects: In project B, add the service account from Project A and then assign Storage Object Viewer permission on the bucket.
 
 ## VPC
   - VPC is global & subnets are created per region us-central-1
