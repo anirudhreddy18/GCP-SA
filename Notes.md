@@ -444,6 +444,9 @@ Event Driven Architectures
 * Transfer service is recommended for transferring data more than 1 TB from onprem or anywhere. gsutil for smaller data. Larger data use Physical appliances.
 * ACLS controls access to individual objects, IAM is for all objects inside bucket. Access can be granted by IAM or ACL.
 * Limited time to access objects without having google accounts - use signed URL
+* ACL to control access to bucket & objects. Legacy method also can use IAM
+* Lifecycle policies to move b/w different storage options.
+* Use gsutil for less than 1TB. Cloud Transfer Svc > 1TB. MOre than 100 or 480 TB use Storage Appliance.
 
 ## Releases
   - Recreate : take down V1 & deploy V2. Causes down time.
