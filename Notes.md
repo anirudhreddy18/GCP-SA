@@ -253,16 +253,24 @@ Event Driven Architectures
       - volume level of transactions.
   8. Relational -> OLAP & OLTP, predefined schema, strong transactional capabilities. Most traditional apps, ERP, com, e-commerce, banking apps.
   ### cloud SQL  
-  - Postgres, mysql, Sql Server only regional. 
-  - Up to few TB’s of data. 
+  - Structured data, predefined schemas, ACID Transactions, Strong Consistency, read heavy workloads, SQL language.
+  - Limitation: Postgres, mysql, Sql Server only regional(no db across regions).
+  - Limitation: Up to few TB’s(30TB) of data. 
   - Don’t worry about os patching, backups, Point in time recovery or archives. 
   - Automatic encryption for tables & backups.
   - Automatic storage increase.
-  - Also schedule backups.
+  - Also schedule backups. Backups can be replicated across regioons & new DB can be spun up in another region.
   - Use AWS DMS to migrate to gcp
-  - Use cloud SQL proxy to connect from GKE< GAE, cloud functions etc.
   - Read scalability use read replicas. HA config doesn’t increase scalability. Increase writes use vertical scaling.
-  - cloud Spanner -> huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users. Uses horizontal scaling
+
+  ### Cloud SQL Auth Proxy
+  - Architecture: Client app has side car container running called Proxy client, and there is another side car container called proxy client close to DB instance. Communication is secure using SSL/TLS.
+  - Use cloud SQL proxy to connect from GKE, GAE, cloud functions etc. 
+  - Connection: Public IP(not recommended), Private IP(works with in same network, safe in shared VPC), Cloud SQL Suth Proxy(GCP recommended).
+  - Params needed: SQL instance, port, Service Account credentials.
+
+  ### SPANNER  
+  - huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users(DB runs in multiple regions). Uses horizontal scaling
     
   ### OLAP
   - reporting apps, data warehouses, BI apps, Analytics streams
