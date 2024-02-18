@@ -270,7 +270,8 @@ Event Driven Architectures
   - Params needed: SQL instance, port, Service Account credentials.
 
   ### SPANNER  
-  - huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users(DB runs in multiple regions). Uses horizontal scaling
+  - huge volumes TB’s, unlimited scaling ,high availability(99.999 %), global users(DB runs in multiple regions). Uses horizontal scaling.
+  - Interleaved tables.
     
   ### OLAP
   - reporting apps, data warehouses, BI apps, Analytics streams
