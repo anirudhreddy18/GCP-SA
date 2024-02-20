@@ -275,7 +275,12 @@ Event Driven Architectures
     
   ### OLAP
   - reporting apps, data warehouses, BI apps, Analytics streams
-  - BigQuery
+  #### BigQuery   
+  - Datasets -> collection of views & tables.
+  - Tables -> supports column, stores data in columns, supports scalar(primitive data types) & nested structures(Array, Struct).
+  - Views -> can be subset or joining of multiple tables. Can be materialized
+  - Virtual Tables -> actual data resides in bigtable, bigquery creates virtual table & let's you query on this data.
+  - IAM roles can be applied at dataset, table or view level.
      
   ### NOSQL 
    1. not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
