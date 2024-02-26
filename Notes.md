@@ -233,6 +233,7 @@ Event Driven Architectures
   - Secret Manager - store passwords, rotate keys with cloud functions, auditing with cloud Audit logs, Encrypted by default.
 
 ## Databases
+  OLTP => customer placing an order, managing inventory etc. These transactions are usually short & high volume, ACID characteristics.
   1. Availability -> having standby instances in different zones or regions. Failover to standby when master is not available.
   2. Durability -> standbys, snapshots, transaction logs & replicas in different zones or regions.
   3. RTO - recovery time objective -> max time app can be down
@@ -274,6 +275,7 @@ Event Driven Architectures
   - Interleaved tables.
     
   ### OLAP
+  Focussed on query, reporting & Analytics. Data sources are OLTP Systems
   - reporting apps, data warehouses, BI apps, Analytics streams
   #### BigQuery   
   - Datasets -> collection of views & tables.
@@ -281,7 +283,14 @@ Event Driven Architectures
   - Views -> can be subset or joining of multiple tables. Can be materialized
   - Virtual Tables -> actual data resides in bigtable, bigquery creates virtual table & let's you query on this data.
   - IAM roles can be applied at dataset, table or view level.
-     
+  - Jobs: Data loading or query jobs.
+  - Partitions: with partitions, less data to scan. A table is split into multiple partitions. BigQuery charges based on data scanned. 
+     Types: Timestamp/date based on custom column, integer based, timebased(default/inbuilt psuedo column)
+  - Clustering Tables: used clustered column similar to cassandra again to limit amount of data being scanned. Helpful to add to the where clause & also for aggregation on columns.
+  - Load Data: Cloud Storage, Other GCP Services, Stream Data pipelines(Avro preferred), Dataflow(ETL), DML Bulk Loads, local machine etc.
+  - Big Query Transfer Service.
+  - Row & column level security - if we have sensitive data fields & we dont want users viewing them. Tags need to be created in Data Catalog Svc.
+
   ### NOSQL 
    1. not only SQL, tradeoff for scalability & high performance, easily scalable to PB’s of data.
    2. Cloud Firestore(Data store) -> 
@@ -292,6 +301,18 @@ Event Driven Architectures
       - Small to medium DB’s
    3. Cloud Big Table - wide column DB, not server less. streaming, Large analytical & operational workloads.
 
+ ### Data Engineering
+  - ETL Jobs -> Migrate from onprem to bigquery, Sync data b/w two systems.
+  - Data Pipelines -> ETL Jobs, Data Enrichment(adding new attributes), real time analysis.
+  - ELT -> Extract data & load to staging area in Data warehouse -> Apply Transform & then again load to Data Warehouse or datamart.
+  - Analytics: Descriptive -> Analyze real time data& historical data. predictive, predictive & action.
+  - cloud data fusion -> code free ETL/ELT pipelines.
+  - Cloud composer -> Apache Airflow. DAG workflows
+  - Cloud Dataflow - Apache beeam, stream & btach processing. ETL jobs & windowing operations.
+  - Cloud DataProc - managed hadoop & spark. ETL/ELT Jobs. Supports stream processing as well. MIgrate from onprem hadoop. Large Scale batch  & stream processing & ML.
+
+ 
+      
 ### Load Balancing
  1. Features:
     - distribute load across instances in multiple regions & zones. Enables High Availability
