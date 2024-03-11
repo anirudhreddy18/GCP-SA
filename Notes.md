@@ -121,7 +121,13 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
 
   ### AWS Services:
   Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
-    
+
+  ### Shared VPC(common services/host project)
+   - Manage subnets, routes, firewall rules etc.
+   - Create Host Project - Cloud Router etc. Manage connections to onprem using Interconnect or VPN & also to other cloud providers. Other cloud providers need a external Gateway.
+   - Manage NAT here - external/egress.
+   - Cloud DNS manage here as well - application teams uses sub-domains.
+     
 ## Pub/Sub
  - Event Driven
  - Streaming Analytics (pair with Dataflow & send data to BigQuery)
