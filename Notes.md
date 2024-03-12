@@ -20,6 +20,15 @@ Cloud Shell: files in home directory $HOME will persist b/w sessions, (scripts, 
  - ARV -> Non prod -> Platform -> project(Shared GKE)
  - ARV -> commons -> project
 
+## Host Project(Spoke Dev)
+ - Private Service Access
+ - VPC Peering to other external Services
+ - Cloud NAT
+ - Shared VPC connect to service projects.
+ - Subnets, firewall rules,routes(Cloud router)
+ - Cloud DNS entries
+ - Cloud Interconnect(hybrid connectivity to Onprem)
+
 ## Cloud run
 * Container to production in seconds
 * Fully managed server less platform, Pay per use(CPU, Requests, Networking)
