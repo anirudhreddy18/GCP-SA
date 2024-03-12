@@ -13,6 +13,13 @@ Other CLI tools: gsutil, Kubectl
 
 Cloud Shell: files in home directory $HOME will persist b/w sessions, (scripts, config files etc.)
 
+## Project Hierarchy
+ - Organization -> folder(department/tenant) -> project -> resources
+ - ARV -> Non Prod/Development -> fraud -> project
+ - ARV -> Non prod -> Network -> project(Host Project)
+ - ARV -> Non prod -> Platform -> project(Shared GKE)
+ - ARV -> commons -> project
+
 ## Cloud run
 * Container to production in seconds
 * Fully managed server less platform, Pay per use(CPU, Requests, Networking)
@@ -50,7 +57,12 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
  - Custom apps publishing to Pub/Sub
  - Custom Events
 
+## IAP
+  - Google Cloud Identity-Aware Proxy (IAP) is a security service that allows organizations to control and manage access to their cloud applications and resources based on user identity and context. It provides a layer of authentication and authorization for web applications and SSH access, ensuring that users can only access resources if they meet the specified criteria, such as user identity and device trust. IAP helps enhance security by enabling fine-grained access control without the need for complex VPNs or extensive firewall rules.
+  - Create a bastion host using IAP. This eliminates need for public IP Address.
+
 ## GKE
+  In a private Google Kubernetes Engine (GKE) cluster, not only are the nodes isolated from the internet, but master access is also restricted to a private Google-controlled network, enhancing the overall security of the cluster. Master access is granted only to authorized instances within the VPC, ensuring that both the cluster’s control plane (master) and worker nodes remain in a secure, private network environment. Connect to Master from Bastion Host using IAP. Access to your master node will be strictly limited to your bastion host IP, fortifying the overall security of your infrastructure.
   - cluster: group of compute engine instances. Need to create a cluster to run workloads
   - master: manages the cluster
   - worker node: all the workloads run here
@@ -85,7 +97,8 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   - Each project has a default VPC
 
   ### When creating subnet:
-   - Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network.
+   - Enable private google access -> Allows VM’s to connect to other Google API’s. No NAT Gateway needed, traffic never leaves Google network. Still private but uses set of internal IP's google provides
+   - Enable private Service Access -> for connecting to other GCP Services like DB, Redis etc. Internal IP's from VPC are used. 
    - Flow logs: troubleshoot any VPC related network Issues
    - Resources with in a VPC can talk to each other using private IP’s. If you want them in separate networks use a separate VPC.
    - by default uses hub & spoke -> it means all VPC can connect to 1 central VPC. NO transitive routing
@@ -98,7 +111,6 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   - Not accessible from Internet
   - No data transfer charges
   - AWS Transit gateway/Shared VPC -> connect to other VPC’s on GCP & on prem resources using cloud VPN. Ping other services using private IP’s.A host project has parent VPC. Service projects are attached to Child. 
- 
 
   ### On Prem Connections
   1. Cloud VPN -> connect from GCP to onprem resources using VPN.
@@ -108,10 +120,9 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   3. Best practices: fall back mechanism use cloudhub VPN & Primary as Interconnect. 
 
   ### VPC Endpoints
-   - AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can   improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
+   - AWS Interface endpoints -> GCP Private Service Connect. If no VPC endpoints then you have to go through internet where speed is slow & you pay data coming out of cloud. It’s is a private link that can improve latency. It uses private link in AWS Network. This is highly scalable compared to peering.
    - AWS Gateway endpoints -> needs to be setup using private Service connect. Traffic never leaves the VPC.
   
-
   ### Firewall Rules:
   - Ingress rule, egress rules 
   - can be applied within network
@@ -119,14 +130,22 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   - same rule applied to all instances, apply tags to specific VM & using a service account.
   - cannot share among other networks (ex: VPC Peering)
 
-  ### AWS Services:
-  Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
+  ### Cloud NAT:
+    A NAT, which stands for Network Address Translation, is a technology used in computer networking to allow multiple instances on a private network to share a single public IP address when connecting to the internet. This IP will be used to whitelist when connecting to external svc.
 
   ### Shared VPC(common services/host project)
+   A VPC is created in host project, all service projects share the same VPC with individual subnets. Service projects are linked to host projects.
    - Manage subnets, routes, firewall rules etc.
    - Create Host Project - Cloud Router etc. Manage connections to onprem using Interconnect or VPN & also to other cloud providers. Other cloud providers need a external Gateway.
    - Manage NAT here - external/egress.
    - Cloud DNS manage here as well - application teams uses sub-domains.
+
+  ### AWS Services:
+  Interface/gateway endpoints, transit gateways, VPC peering, Direct Connect, NAT Gateways, Internet Gateway, Security Groups, Subnet ACLs
+
+## Cloud DNS
+ - public zone
+ - private zone
      
 ## Pub/Sub
  - Event Driven
@@ -316,8 +335,6 @@ Event Driven Architectures
   - Cloud composer -> Apache Airflow. DAG workflows
   - Cloud Dataflow - Apache beeam, stream & btach processing. ETL jobs & windowing operations.
   - Cloud DataProc - managed hadoop & spark. ETL/ELT Jobs. Supports stream processing as well. MIgrate from onprem hadoop. Large Scale batch  & stream processing & ML.
-
- 
       
 ### Load Balancing
  1. Features:
