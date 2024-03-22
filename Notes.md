@@ -84,7 +84,8 @@ EDA Cloud Run for Anthos -> Equivalent: KNative Serverless functions that run on
   - Provides pod & cluster Autoscaling
   - gcloud container clusters get-credentials CLUSTER --region us-central1 --project PROJECT_ID
   - can add more than 1 node pool. Within Node pool, you can configure instance types etc.
- 
+  - GKE Standard charged per cluster. GKE Autopilot per pods. GKE Cluster per line of business or SHared GKE & use namespaces as tenants.
+
 ### Roles
  - Basic -> viewer, owner, admin. Gives read access to all GCP Services etc. Not recommended
  - Predefined -> storageAdmin etc.
