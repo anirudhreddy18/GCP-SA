@@ -40,3 +40,13 @@
 ## Private Service Access
 * For CloudSQL, google creates this instances in its own VPC. So Private Service Access, will be used to set Aside a CIDR range for private connections. VPC Peering will be setup to connect to CloudSQL Instance.
 * Serverless VPC Access: Connect from Serverless environment like Cloud Function to Cloud SQL in different VPC. It needs a Serverless VPC Connector to route Traffic.
+
+## IAP
+* IAP provides access to manage user access to Web Apps & Cloud Resources.
+* SSH & HTTP Based applications.
+* Instances with Private IP cannot be SSH'ed directly. You'd need a bastion Host with a Public IP. IAP Solves this probelm by authenticating users using Google Console.
+* Instances only with Private IP Can also be connected via SSH using IAP. gcloud command -- tunnel-through-iap
+* Go to IAP Console -> Click on VM, add principal(User email) & Secured Tunnel User Role to User. This should allow them to SSH to VM's with Private IP.
+* This role can also be added at IAM level to user, to allow them to SSH to all VM's.
+* For http applications, it works similar to OIDC. You need to register app to use IAP. Then decide Internal(only Org Users) or External(all gmail accounts). Then publish your app & enable IAP. After that, you can enable IAP Secured Web User Role to Particular Users. They will be able to access Http based web application.
+* Firewall Rule: By default you have to allow anywhere from the internet on Port 22. Rather than doing that, Google provides with ban IP range with 35.X.X.X. Add that as source IP in your firewall rule. This will allow only traffic from the tunnel using IAP with above IP Address.
