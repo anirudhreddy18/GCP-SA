@@ -50,3 +50,16 @@
 * This role can also be added at IAM level to user, to allow them to SSH to all VM's.
 * For http applications, it works similar to OIDC. You need to register app to use IAP. Then decide Internal(only Org Users) or External(all gmail accounts). Then publish your app & enable IAP. After that, you can enable IAP Secured Web User Role to Particular Users. They will be able to access Http based web application.
 * Firewall Rule: By default you have to allow anywhere from the internet on Port 22. Rather than doing that, Google provides with ban IP range with 35.X.X.X. Add that as source IP in your firewall rule. This will allow only traffic from the tunnel using IAP with above IP Address.
+
+## IP Addresses
+* Public IP address will be converted by google to Private IP address to VM's using NIC's.
+* Internal -> Internal IP Address. Can be reachable only with in VPC, VPC Peering, Private Service Connect, VPN. NO charge for static or ephemeral.
+* External -> Ephemeral or Static. Charged even for running instances. High cost when not using public IP.
+* Multiple NIC -> you can add multiple VPC's to a VM. That means now it will have 2 private IP's instead of one. VPC peering needs to be enabled if you have client that needs to connect to this VM using 2 private IP's.
+* Alias & Secondary IP ranges -> Primary IP range is the primary range you assign for Subnet. But you can also attach secondary range as well. There can be multiple secondary IP ranges. When a VM is created you can assign 1 IP from Primary, 1 IP from secondary etc. Connectivity with IP's should work as there all in 1 VPC.
+
+## GKE
+* Secondary IP range for subnets are assigned to Pods & Services. Assign a range to Pod, Assign a range to Services. Node pool: create default pool with 1 node for Public GKE. Assign a primary subnet in Networking section. Nodes will get Private IP from Subnet range.
+* GKE Standard: pay per Cluster, GKE Autopilot: Pay per pods. Use Autopilot always. Create a shared GKE or 1 GKE per line of Business.
+* Private Cluster: Create a private Cluster as above. This wont connect from Cloud Shell, since the master is in different VPC & Cloud Shell is in different VPC. Only way would be to create a Jump/Bastion Host in Same VPC & then connect to GKE Cluster. This will allow connection, as both Control Plane VPC & our VPC has been peered. Connection from Onprem VPN will not work - this is because this is peered again to our VPC, GKE wont allow third Party connections. Master node can be secured to allow only connection from Bastion Host. Control plane CIDR range is similar to Private Service Access, its provisioned in Google Controlled VPC. This VPC is peered with our VPC, so private IP communication is possible.
+
