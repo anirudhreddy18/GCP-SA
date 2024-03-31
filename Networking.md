@@ -35,7 +35,8 @@
 * Source: Source IP, Source tags, Service Account
 * Target: All Instances, Target Tags, Service Account
 * Port & Protocol: ex: tcp, 22 , http 80/443, icmp etc.
-* Source can be Tag, Target can also be Tags -> ex: App tier allow traffic to DB Tier. 
+* Source can be Tag, Target can also be Tags -> ex: App tier allow traffic to DB Tier.
+* Firewall rules dont work with VPC Peering. The other peered VPC should allow/deny traffic accordingly using firewall rules.
 
 ## Private Service Access
 * For CloudSQL, google creates this instances in its own VPC. So Private Service Access, will be used to set Aside a CIDR range for private connections. VPC Peering will be setup to connect to CloudSQL Instance.
@@ -58,7 +59,7 @@
 * Multiple NIC -> you can add multiple VPC's to a VM. That means now it will have 2 private IP's instead of one. VPC peering needs to be enabled if you have client that needs to connect to this VM using 2 private IP's.
 * Alias & Secondary IP ranges -> Primary IP range is the primary range you assign for Subnet. But you can also attach secondary range as well. There can be multiple secondary IP ranges. When a VM is created you can assign 1 IP from Primary, 1 IP from secondary etc. Connectivity with IP's should work as there all in 1 VPC.
 
-## GKE
+## GKE Networking
 * Secondary IP range for subnets are assigned to Pods & Services. Assign a range to Pod, Assign a range to Services. Node pool: create default pool with 1 node for Public GKE. Assign a primary subnet in Networking section. Nodes will get Private IP from Subnet range.
 * GKE Standard: pay per Cluster, GKE Autopilot: Pay per pods. Use Autopilot always. Create a shared GKE or 1 GKE per line of Business.
 * Private Cluster: Create a private Cluster as above. This wont connect from Cloud Shell, since the master is in different VPC & Cloud Shell is in different VPC. Only way would be to create a Jump/Bastion Host in Same VPC & then connect to GKE Cluster. This will allow connection, as both Control Plane VPC & our VPC has been peered. Connection from Onprem VPN will not work - this is because this is peered again to our VPC, GKE wont allow third Party connections. Master node can be secured to allow only connection from Bastion Host. Control plane CIDR range is similar to Private Service Access, its provisioned in Google Controlled VPC. This VPC is peered with our VPC, so private IP communication is possible.
@@ -67,6 +68,15 @@
 * Connects onPrem Network to VPC Network using VPN IPSec
 * Works b/w GCP & on Prem datacenter or GCP & other Cloud Providers.
 * Traffic is encrypted at one gateway & then decrypted at other gateway. Tunneled packets travel over public internet. Single Tunnel supports 3GB. You can add more than 1 tunnel per gateway.
+### Static Routing  
 * First Project: Create VPN gateway & attach it to our VPC. Create a Static public IP in our network & add it. Create a tunnel b/w them & enter remote peer static IP & choose route based and attach network range of onprem. Use a shared Key.
 * VPN gateway will be attached at VPC. This will encrypt traffic & send it over internet using secure tunnels. The other VPN gateway will decrypt it.
 * Static Routing will not work as each time new Subnet is Added, this needs to be updated on other side VPC. Doing it manually everytime is painful.
+### Dynamic Routing
+* Cloud Router: This will detect the new subnets created on on prem side. This is a dynamic way of routing, rather than using static way. It works with BGP Protocol & automatically adds routes. Mandatory for Dynamic Routing.
+* VPN Gateway: Create a HA VPN gateway. It will create 2 Public IP's automatically for HA.
+* VPN Tunnels: Create a VPN Tunnel, attach it to VPC & then select Cloud Router. After that, for peer gateway select gcp Project & other Cloud Router or Transit Gateway for AWS etc.
+* BGP Session: create BGP Session, add routes automatically, choose ASN from cloud router. Then use these addresses on other project.
+* When a new subnet is added - cloud router in current project will inform other router. Routes will updated accordingly.
+* this will also work across regions - simply enable Cloud Router at global mode in VPC Settings.
+* Network Intelligence -> connectivity Tests. Important tool to test connectivity b/w two systems.
