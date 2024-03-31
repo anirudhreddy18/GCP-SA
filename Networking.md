@@ -80,3 +80,12 @@
 * When a new subnet is added - cloud router in current project will inform other router. Routes will updated accordingly.
 * this will also work across regions - simply enable Cloud Router at global mode in VPC Settings.
 * Network Intelligence -> connectivity Tests. Important tool to test connectivity b/w two systems.
+
+## Cloud NAT
+* when you need to reach out to Internet - you need CLoud NAT. Useful for instances or GKE with only Private IP.
+* Assigned to VPC - region.
+* Create NAT gateway -> assign to VPC, select all Primary & Secondary IP ranges. A cloud Router will need to be created as well.
+
+## Cloud Interconnect
+* Connecting onPrem with GCP Network. This is completely private - unlike VPN which is encrypted & travels through Internet. Communication happens using Private IP addresses(same network). Very Low latency. No encryption needed.
+* Dedicated & Partner -> partner Interconnect uses connection via ISP.
