@@ -63,3 +63,10 @@
 * GKE Standard: pay per Cluster, GKE Autopilot: Pay per pods. Use Autopilot always. Create a shared GKE or 1 GKE per line of Business.
 * Private Cluster: Create a private Cluster as above. This wont connect from Cloud Shell, since the master is in different VPC & Cloud Shell is in different VPC. Only way would be to create a Jump/Bastion Host in Same VPC & then connect to GKE Cluster. This will allow connection, as both Control Plane VPC & our VPC has been peered. Connection from Onprem VPN will not work - this is because this is peered again to our VPC, GKE wont allow third Party connections. Master node can be secured to allow only connection from Bastion Host. Control plane CIDR range is similar to Private Service Access, its provisioned in Google Controlled VPC. This VPC is peered with our VPC, so private IP communication is possible.
 
+## Hybrid Connectivity
+* Connects onPrem Network to VPC Network using VPN IPSec
+* Works b/w GCP & on Prem datacenter or GCP & other Cloud Providers.
+* Traffic is encrypted at one gateway & then decrypted at other gateway. Tunneled packets travel over public internet. Single Tunnel supports 3GB. You can add more than 1 tunnel per gateway.
+* First Project: Create VPN gateway & attach it to our VPC. Create a Static public IP in our network & add it. Create a tunnel b/w them & enter remote peer static IP & choose route based and attach network range of onprem. Use a shared Key.
+* VPN gateway will be attached at VPC. This will encrypt traffic & send it over internet using secure tunnels. The other VPN gateway will decrypt it.
+* Static Routing will not work as each time new Subnet is Added, this needs to be updated on other side VPC. Doing it manually everytime is painful.
