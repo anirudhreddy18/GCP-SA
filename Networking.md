@@ -12,7 +12,7 @@
 * Routes: ROutes are created per subnet, so a VPC has 2 different CIDR Ranges for 2 different subnets, 2 routes will be created. VPC router will route traffic b/w VPC. Default Internet Gateway route is also added for Internet Traffic to & fro. Routes are created for VPC Peering as well.
 * Subnet ranges can be expanded from 10.0.0.0/26 to 10.0.0.0/24.
 * Private Google Access: Connect to google API's using private IP Address. Enabled this setting at Subnet Level.
-* Flow Logs:
+* Flow Logs: Enabled at Subnet Level - it will show complete packet trace. Logs wil be available in CLoud Logging. Dosent affect performance, but increases logging costs.
 * Disable Public IP: Go to Networking, remove ephemeral Public IP.
   
 ### VPC Peering
